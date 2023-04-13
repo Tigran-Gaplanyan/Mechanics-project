@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 
@@ -16,25 +18,75 @@ class Spring:
         """
         Overloaded public method that returns an array of coordinates of an oscillating mass
         """
-        return np.array([t, dt, x0, v0])
+        # Calculate the angular frequency of the oscillation
+        w = math.sqrt(self.__k)
+
+        # Initialize the array of coordinates
+        x = np.zeros_like(t)
+        x[0] = x0
+
+        # Calculate the number of time steps based on the given time period and time step
+        n = int(t / dt)
+
+        # Iterate over each time step
+        for i in range(1, n + 1):
+            # Calculate the current time
+            current_t = i * dt
+
+            # Calculate the current coordinate using the formula for harmonic motion
+            current_x = x0 * math.cos(w * current_t) + (v0 / w) * math.sin(w * current_t)
+
+            # Append the current coordinate to the array
+            x[i] = current_x
+
+        # Return the array of coordinates
+        return x
 
     def move(self, t, dt, x0):
         """
         Overloaded public method that returns an array of coordinates of an oscillating mass
         """
-        return np.array([t, dt, x0])
+        # Calculate the angular frequency of the oscillation
+        w = math.sqrt(self.__k)
+
+        # Initialize the array of coordinates
+        x = np.zeros_like(t)
+        x[0] = x0
+
+        # Calculate the number of time steps based on the given time period and time step
+        n = int(t / dt)
+
+        # Iterate over each time step
+        for i in range(1, n + 1):
+            # Calculate the current time
+            current_t = i * dt
+
+            # Calculate the current coordinate using the formula for harmonic motion
+            current_x = x0 * math.cos(w * current_t)
+
+            # Append the current coordinate to the array
+            x[i] = current_x
+
+        # Return the array of coordinates
+        return x
 
     def move(self, t0, t1, dt, x0, v0):
         """
         Overloaded public method that returns an array of coordinates of an oscillating mass
         """
-        return np.array([t0, t1, dt, x0, v0])
+        w = math.sqrt(self.__k)
+        t = np.arange(t0, t1, dt)
+        x = x0 * np.cos(w * t) + (v0 / w) * np.sin(w * t)
+        return x
 
     def move(self, t0, t1, dt, x0, v0, m):
         """
         Overloaded public method that returns an array of coordinates of an oscillating mass
         """
-        return np.array([t0, t1, dt, x0, v0, m])
+        w = math.sqrt(self.__k / m)
+        t = np.arange(t0, t1, dt)
+        x = x0 * np.cos(w * t) + (v0 / w) * np.sin(w * t)
+        return x
 
     def force(self, x):
         """
