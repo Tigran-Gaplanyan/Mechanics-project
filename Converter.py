@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 from Spring import Spring
 from typing import List
-
+from Body import Body
 
 class Converter(ABC):
     @abstractmethod
@@ -12,14 +12,6 @@ class Converter(ABC):
     @abstractmethod
     def bits_to_springs(self, bits: str) -> List[Spring]:
         pass
-
-    # @abstractmethod
-    # def to_spring_system(self, bits: str):
-    #     pass
-    #
-    # @abstractmethod
-    # def from_spring_system(self, spring_system) -> int:
-    #     pass
 
     def compute_oscillations(self, bits: str, t: float, dt: float, x0: float, vo: float) -> List[float]:
         springs = self.bits_to_springs(bits)
