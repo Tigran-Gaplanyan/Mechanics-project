@@ -4,13 +4,14 @@ from Spring import Spring
 from typing import List
 from Body import Body
 
+
 class Converter(ABC):
     @abstractmethod
-    def binary_to_decimal(self, binary: str) -> int:
+    def binary_to_decimal(self, binary):
         pass
 
     @abstractmethod
-    def bits_to_springs(self, bits: str) -> List[Spring]:
+    def bits_to_springs(self, bits):
         pass
 
     def compute_oscillations(self, bits: str, t: float, dt: float, x0: float, vo: float) -> List[float]:

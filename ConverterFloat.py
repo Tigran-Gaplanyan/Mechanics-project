@@ -1,67 +1,57 @@
-import math
 from Converter import Converter
-from Spring import Spring
+from ConverterInt import ConverterInt
 
 
 class ConverterFloat(Converter):
 
-    def __init__(self, int_bits, frac_bits):
-        self.int_bits = int_bits
-        self.frac_bits = frac_bits
+    def __init__(self, integer_bits, fraction_bits):
+        super().__init__()
+        self.integer_bits = integer_bits
+        self.fraction_bits = fraction_bits
+        self.integer_converter = ConverterInt()
+        self.fraction_converter = ConverterInt()
 
     def binary_to_decimal(self, binary):
-        # Split the binary string into integer and fractional parts
-        int_str = binary[:self.int_bits]
-        frac_str = binary[self.int_bits:]
+        # Fetch the radix point
+        point = binary.find('.')
 
-        # Convert the integer part to decimal
-        int_part = self.binary_to_decimal_int(int_str)
+        # Update point if not found
+        if (point == -1):
+            point = len(binary)
 
-        # Convert the fractional part to decimal
-        frac_part = self.binary_to_decimal_frac(frac_str)
+        intDecimal = 0
+        fracDecimal = 0
+        twos = 1
 
-        # Combine the integer and fractional parts
-        return int_part + frac_part
+        # Convert integral part of binary
+        # to decimal equivalent
+        for i in range(point - 1, -1, -1):
+            # Subtract '0' to convert
+            # character into integer
+            intDecimal += ((ord(binary[i]) -
+                            ord('0')) * twos)
+            twos *= 2
 
-    def binary_to_decimal_int(self, binary):
-        # Convert the integer part to decimal
-        decimal = 0
-        for i in range(len(binary)):
-            if binary[i] == '1':
-                decimal += 2 ** (len(binary) - i - 1)
-        return decimal
+        # Convert fractional part of binary
+        # to decimal equivalent
+        twos = 2
 
-    def binary_to_decimal_frac(self, binary):
-        # Convert the fractional part to decimal
-        decimal = 0
-        for i in range(len(binary)):
-            if binary[i] == '1':
-                decimal += 2 ** (-1 * (i + 1))
-        return decimal
+        for i in range(point + 1, len(binary)):
+            fracDecimal += ((ord(binary[i]) -
+                             ord('0')) / twos)
+            twos *= 2.0
+
+        # Add both integral and fractional part
+        ans = intDecimal + fracDecimal
+
+        return ans
 
     def bits_to_springs(self, bits):
-        # Convert the binary sequence to an array of frequency amplitudes using the Fourier Transform
-        freq_amps = self.compute_freq_amps(bits)
+        integer_part = bits[:self.integer_bits]
+        fraction_part = bits[self.integer_bits:]
 
-        # Create a system of unit springs that implements the frequency amplitudes
-        spring_system = self.create_spring_system(freq_amps)
+        integer_springs = self.integer_converter.bits_to_springs(integer_part)
+        fraction_springs = self.fraction_converter.bits_to_springs(fraction_part)
 
-        return spring_system
-
-    def compute_freq_amps(self, bits):
-        # Compute the frequency amplitudes of the oscillations using the Fourier Transform
-        N = len(bits)
-        freq_amps = []
-        for k in range(N):
-            amplitude = 0
-            for n in range(N):
-                amplitude += int(bits[n]) * math.cos(2 * math.pi * k * n / N)
-            freq_amps.append(amplitude)
-        return freq_amps
-
-    def create_spring_system(self, freq_amps):
-        # Create a system of unit springs that implements the frequency amplitudes
-        spring_system = []
-        for freq_amp in freq_amps:
-            spring_system.append(Spring(k=abs(freq_amp)))
-        return spring_system
+        springs = integer_springs + fraction_springs
+        return springs

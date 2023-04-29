@@ -1,6 +1,7 @@
 from Converter import Converter
 from Spring import Spring
 
+
 class Converter8Bit(Converter):
     def __init__(self):
         self.springs = []
@@ -25,6 +26,6 @@ class Converter8Bit(Converter):
             left = self.bits_to_springs(bits[:mid])
             right = self.bits_to_springs(bits[mid:])
             if bits[0] == '0':
-                return self.springs + [Spring.inSeries(left[-1], right[0])] + left[:-1] + right[1:]
+                return self.springs + [Spring.in_series(left[-1], right[0])] + left[:-1] + right[1:]
             else:
-                return self.springs + [Spring.inParallel(left[-1], right[0])] + left[:-1] + right[1:]
+                return self.springs + [Spring.in_parallel(left[-1], right[0])] + left[:-1] + right[1:]
